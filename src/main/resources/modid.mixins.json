@@ -6,9 +6,9 @@
   "mixins": [
     "ItemEntityDespawnMixin",
     "MinecraftServerMixin",
-    "ItemListingMixin",
     "ItemStackTooltipMixin",
-    "EntityColorMixin"
+    "EntityColorMixin",
+    "EnchantmentLevelMixin"
   ],
   "client": [
   ],

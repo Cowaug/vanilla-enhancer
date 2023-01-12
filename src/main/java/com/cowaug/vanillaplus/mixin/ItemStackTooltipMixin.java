@@ -2,18 +2,27 @@ package com.cowaug.vanillaplus.mixin;
 
 import com.cowaug.vanillaplus.Helper;
 import com.cowaug.vanillaplus.config.RarityConfig;
+import com.cowaug.vanillaplus.mod.rarity.CustomRarity;
 import net.fabricmc.fabric.api.item.v1.FabricItemStack;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -21,25 +30,18 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @Mixin(ItemStack.class)
-public class ItemStackTooltipMixin implements FabricItemStack {
-//    @Inject(method = "<init>*", at = @At("RETURN"))
-//    public void setCustomName(CallbackInfo ci){
-//        ItemStack thisItemStack = Helper.CastTo(ItemStack.class, this);
-//        thisItemStack.setCustomName(Text.empty().append(thisItemStack.getName()).formatted(Formatting.LIGHT_PURPLE));
-//    }
+public abstract class ItemStackTooltipMixin implements FabricItemStack {
+    @Shadow
+    public abstract void setSubNbt(String key, NbtElement element);
 
-//    @Inject(method = "setCustomName(Lnet/minecraft/text/Text;)Lnet/minecraft/item/ItemStack", at = @At("HEAD"))
-//    public void setCustomName(@Nullable Text name, CallbackInfoReturnable<ItemStack> cir) {
-//        if (name != null) {
-//            name = name.copy().formatted(Formatting.DARK_AQUA);
-//        }
-//    }
+    @Shadow
+    public abstract NbtCompound getSubNbt(String key);
 
     @Inject(method = "getTooltip", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
     public void getTooltip(@Nullable PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> ci, List<Text> texts) {
         ItemStack thisItemStack = Helper.CastTo(ItemStack.class, this);
 
-        Text itemName = texts.get(0).copy().formatted(RarityConfig.getFormat(Registries.ITEM.getId(thisItemStack.getItem()).getPath()));
+        Text itemName = texts.get(0).copy().formatted(RarityConfig.getRarity(Registries.ITEM.getId(thisItemStack.getItem()).getPath()).getFormats());
         texts.remove(0);
         texts.add(0, itemName);
 
@@ -61,6 +63,22 @@ public class ItemStackTooltipMixin implements FabricItemStack {
     private void getName(CallbackInfoReturnable<MutableText> cir) {
         ItemStack thisItemStack = Helper.CastTo(ItemStack.class, this);
         if (!cir.isCancelled())
-            cir.setReturnValue(cir.getReturnValue().formatted(RarityConfig.getFormat(Registries.ITEM.getId(thisItemStack.getItem()).getPath())));
+            cir.setReturnValue(cir.getReturnValue().formatted(RarityConfig.getRarity(Registries.ITEM.getId(thisItemStack.getItem()).getPath()).getFormats()));
+    }
+
+    @Inject(method = "inventoryTick", at = @At("RETURN"))
+    public void inventoryTick(World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
+        ItemStack thisItemStack = Helper.CastTo(ItemStack.class, this);
+        if (world.isClient()) {
+            NbtCompound clientNbt = getSubNbt("CustomRarity");
+            if (clientNbt != null) {
+                RarityConfig.addOverride(Registries.ITEM.getId(thisItemStack.getItem()).getPath(), clientNbt.getString("CustomRarity"));
+            }
+        } else {
+            CustomRarity rarity = RarityConfig.getRarity(Registries.ITEM.getId(thisItemStack.getItem()).getPath());
+            NbtCompound serverNbt = new NbtCompound();
+            serverNbt.putString("CustomRarity", rarity.toString());
+            setSubNbt("CustomRarity", serverNbt);
+        }
     }
 }

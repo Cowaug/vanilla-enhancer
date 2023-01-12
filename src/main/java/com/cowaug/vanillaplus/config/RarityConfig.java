@@ -1,8 +1,10 @@
 package com.cowaug.vanillaplus.config;
 
 import com.cowaug.vanillaplus.mod.rarity.CustomRarity;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import org.apache.commons.compress.utils.Lists;
 import org.yaml.snakeyaml.Yaml;
 
@@ -16,12 +18,15 @@ import static com.cowaug.vanillaplus.VanillaPlus.serverPath;
 
 public class RarityConfig {
     public static final CustomRarity UNCLASSIFIED = new CustomRarity();
+    public static final CustomRarity MULTIPLE_CONFIG = new CustomRarity("HyperTier_0m_6000_true");
     private static final String CONFIG_FILE = "/rarity.yaml";
-    public static Map<String, List<String>> rarityYamlMap; // rarity tier, item identifier
-    public static Map<String, CustomRarity> itemRarityMap = new HashMap<>(); // item identifier, rarity tier
-    public static List<String> allItems = new ArrayList<>(); // item identifier
+    private static Map<String, List<String>> rarityYamlMap; // rarity tier, item identifier
+    private static final Map<String, CustomRarity> itemRarityMap = new HashMap<>(); // item identifier, rarity tier
+    private static final Map<String, CustomRarity> itemRarityOverrideMap = new HashMap<>(); // item identifier, override rarity tier
+    private static final Map<String, CustomRarity> rarityOverrideMap = new HashMap<>();// string, override rarity tier
 
     public static void LoadConfig() {
+        resetAll();
         InputStream inputStream;
         try {
             inputStream = new FileInputStream(serverPath + CONFIG_FILE);
@@ -34,8 +39,8 @@ public class RarityConfig {
             WriteConfig();
         }
 
-        for (String id : allItems) {
-            AddRemainsItemToConfig(id);
+        for (Identifier id : Registries.ITEM.getIds()) {
+            AddRemainsItemToConfig(id.getPath());
         }
         WriteConfig();
 
@@ -45,8 +50,9 @@ public class RarityConfig {
                         if (itemRarityMap.containsKey(identifier)) {
                             System.out.println("Duplicate key: " + identifier);
                             itemRarityMap.remove(identifier);
+                            itemRarityMap.put(identifier, MULTIPLE_CONFIG);
                         }
-                        itemRarityMap.put(identifier, customRarity);
+                        itemRarityMap.putIfAbsent(identifier, customRarity);
                     });
                 }
         );
@@ -170,14 +176,6 @@ public class RarityConfig {
         rarityYamlMap.put(defaultRarity.get(5).toString(), ultimateItems);
     }
 
-    public static void Register(String identifier) {
-        if (allItems.contains(identifier)) {
-            System.out.println("Duplicate identifier: " + identifier);
-        } else {
-            allItems.add(identifier);
-        }
-    }
-
     private static void AddRemainsItemToConfig(String identifier) {
         if (rarityYamlMap.values().stream().noneMatch(l -> l.contains(identifier))) {
             List<String> list = rarityYamlMap.getOrDefault(UNCLASSIFIED.toString(), null);
@@ -189,12 +187,8 @@ public class RarityConfig {
         }
     }
 
-    public static Formatting[] getFormat(String identifier) {
-        return itemRarityMap.getOrDefault(identifier, UNCLASSIFIED).getFormats();
-    }
-
     public static Text getRarityText(String identifier, boolean useDefaultFormat) {
-        CustomRarity rarity = itemRarityMap.getOrDefault(identifier, UNCLASSIFIED);
+        CustomRarity rarity = getRarity(identifier);
 
         List<Formatting> formattingArr = Lists.newArrayList();
 
@@ -205,15 +199,29 @@ public class RarityConfig {
             formattingArr.addAll(Arrays.stream(rarity.getFormats()).toList());
         }
 
+        if (rarity.isDefault()) {
+            formattingArr.add(Formatting.OBFUSCATED);
+        }
+
         return Text.empty().append(rarity.getName()).formatted(formattingArr.toArray(new Formatting[0]));
     }
 
-    public static int GetDespawnTime(String identifier) {
-        return itemRarityMap.getOrDefault(identifier, UNCLASSIFIED).getDepsawnTicks();
+    public static CustomRarity getRarity(String identifier) {
+        return itemRarityOverrideMap.getOrDefault(identifier, itemRarityMap.getOrDefault(identifier, UNCLASSIFIED));
     }
 
-    public static CustomRarity getRarity(String identifier) {
-        return itemRarityMap.getOrDefault(identifier, UNCLASSIFIED);
+    public static void addOverride(String identifier, String customRarityStr) {
+        if (!rarityOverrideMap.containsKey(customRarityStr)) {
+            rarityOverrideMap.put(customRarityStr, new CustomRarity(customRarityStr));
+        }
+        itemRarityOverrideMap.remove(identifier);
+        itemRarityOverrideMap.put(identifier, rarityOverrideMap.getOrDefault(customRarityStr, UNCLASSIFIED));
+    }
+
+    public static void resetAll() {
+        itemRarityMap.clear();
+        rarityOverrideMap.clear();
+        itemRarityOverrideMap.clear();
     }
 }
 

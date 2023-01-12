@@ -73,10 +73,6 @@ public class CustomRarity {
             formattingArr.add(Formatting.WHITE);
         }
 
-        if(isDefault){
-            formattingArr.add(Formatting.OBFUSCATED);
-        }
-
         return formattingArr.toArray(new Formatting[0]);
     }
 
@@ -84,8 +80,12 @@ public class CustomRarity {
         return depsawnTicks;
     }
 
-    public boolean isGlowing(){
+    public boolean isGlowing() {
         return glowing;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
     }
 
     @Override
