@@ -67,13 +67,14 @@ public abstract class ItemStackTooltipMixin implements FabricItemStack {
     @Inject(method = "inventoryTick", at = @At("RETURN"))
     public void inventoryTick(World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
         ItemStack thisItemStack = Helper.CastTo(ItemStack.class, this);
+        String itemIdentifier = Registries.ITEM.getId(thisItemStack.getItem()).getPath();
         if (world.isClient()) {
             NbtCompound clientNbt = getSubNbt("CustomRarity");
             if (clientNbt != null) {
-                RarityConfig.addOverride(Registries.ITEM.getId(thisItemStack.getItem()).getPath(), clientNbt.getString("CustomRarity"));
+                RarityConfig.addOverride(itemIdentifier, clientNbt.getString("CustomRarity"));
             }
         } else {
-            CustomRarity rarity = RarityConfig.getRarity(Registries.ITEM.getId(thisItemStack.getItem()).getPath());
+            CustomRarity rarity = RarityConfig.getRarity(itemIdentifier);
             NbtCompound serverNbt = new NbtCompound();
             serverNbt.putString("CustomRarity", rarity.toString());
             setSubNbt("CustomRarity", serverNbt);

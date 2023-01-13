@@ -1,4 +1,4 @@
-Everywhere_7_1200_false:
+Everywhere_8_1200_false:
   - some_everywhere_identifier
   - acacia_log
   - acacia_sapling
@@ -40,7 +40,7 @@ Everywhere_7_1200_false:
   - jungle_sapling
   - oak_sapling
   - spruce_sapling
-Common_f_6000_false:
+Common_7_6000_false:
   - some_common_identifier
   - acacia_boat
   - acacia_button
@@ -634,7 +634,8 @@ Common_f_6000_false:
   - oak_leaves
   - spruce_leaves
   - ice
-Uncommon_a_12000_false:
+  - bucket
+Uncommon_2_12000_false:
   - some_uncommon_identifier
   - activator_rail
   - bee_nest
@@ -680,7 +681,6 @@ Uncommon_a_12000_false:
   - brown_stained_glass
   - brown_stained_glass_pane
   - brown_terracotta
-  - bucket
   - cartography_table
   - cauldron
   - chainmail_boots
@@ -981,7 +981,7 @@ Uncommon_a_12000_false:
   - yellow_stained_glass
   - yellow_stained_glass_pane
   - yellow_terracotta
-Rare_b_1728000_true:
+Rare_3_1728000_true:
   - some_rare_identifier
   - amethyst_block
   - amethyst_cluster
@@ -1024,7 +1024,8 @@ Rare_b_1728000_true:
   - small_amethyst_bud
   - spectral_arrow
   - spyglass
-  - tridentverdant_froglight
+  - trident
+  - verdant_froglight
   - verdant_frogligh
   - wither_rose
   - leather_horse_armor

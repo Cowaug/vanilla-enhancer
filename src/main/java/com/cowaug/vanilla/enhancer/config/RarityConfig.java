@@ -32,6 +32,8 @@ public class RarityConfig {
         dumperOptions = new DumperOptions();
         dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         dumperOptions.setDefaultScalarStyle(DumperOptions.ScalarStyle.PLAIN);
+        dumperOptions.setIndent(3);
+        dumperOptions.setIndicatorIndent(2);
     }
 
     public static void LoadConfig() {
@@ -44,6 +46,9 @@ public class RarityConfig {
             System.out.println(rarityYamlMap);
         } catch (FileNotFoundException e) {
             System.out.println("[Vanilla Enhancer Rarity] Config not found, creating new one...");
+        }
+
+        if(rarityYamlMap == null){
             CreateDefaultConfig();
             WriteConfig();
         }
@@ -65,6 +70,8 @@ public class RarityConfig {
                     });
                 }
         );
+
+        // itemRarityMap.forEach((k, v) -> System.out.println("[Vanilla Enhancer Rarity] Key [" + k + "] [" + v + "]"));
     }
 
     public static void WriteConfig() {
@@ -220,6 +227,7 @@ public class RarityConfig {
     }
 
     public static CustomRarity getRarity(String identifier) {
+//        System.out.println("[Vanilla Enhancer Rarity] Get key: [" + identifier + "]");
         return itemRarityOverrideMap.getOrDefault(identifier, itemRarityMap.getOrDefault(identifier, UNCLASSIFIED));
     }
 
@@ -229,6 +237,7 @@ public class RarityConfig {
         }
         itemRarityOverrideMap.remove(identifier);
         itemRarityOverrideMap.put(identifier, rarityOverrideMap.getOrDefault(customRarityStr, UNCLASSIFIED));
+//        System.out.println("[Vanilla Enhancer Rarity] Added server override: [" + identifier + "] [" + customRarityStr + "]");
     }
 
     public static void resetAll() {
