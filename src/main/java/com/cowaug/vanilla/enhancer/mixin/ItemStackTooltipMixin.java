@@ -1,6 +1,6 @@
 package com.cowaug.vanilla.enhancer.mixin;
 
-import com.cowaug.vanilla.enhancer.Helper;
+import com.cowaug.vanilla.enhancer.utils.Helper;
 import com.cowaug.vanilla.enhancer.config.RarityConfig;
 import com.cowaug.vanilla.enhancer.mod.rarity.CustomRarity;
 import net.fabricmc.fabric.api.item.v1.FabricItemStack;

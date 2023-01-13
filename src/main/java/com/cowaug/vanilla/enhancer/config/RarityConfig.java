@@ -1,6 +1,7 @@
 package com.cowaug.vanilla.enhancer.config;
 
 import com.cowaug.vanilla.enhancer.mod.rarity.CustomRarity;
+import com.cowaug.vanilla.enhancer.utils.Log;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -43,12 +44,12 @@ public class RarityConfig {
             inputStream = new FileInputStream(serverPath + CONFIG_FILE);
             Yaml yaml = new Yaml();
             rarityYamlMap = yaml.load(inputStream);
-            System.out.println(rarityYamlMap);
+            Log.LogDebug(rarityYamlMap.toString());
         } catch (FileNotFoundException e) {
-            System.out.println("[Vanilla Enhancer Rarity] Config not found, creating new one...");
+            Log.LogInfo("Rarity config not found, creating new one...");
         }
 
-        if(rarityYamlMap == null){
+        if (rarityYamlMap == null) {
             CreateDefaultConfig();
             WriteConfig();
         }
@@ -62,7 +63,7 @@ public class RarityConfig {
                     CustomRarity customRarity = new CustomRarity(k);
                     l.forEach(identifier -> {
                         if (itemRarityMap.containsKey(identifier)) {
-                            System.out.println("Duplicate key: " + identifier);
+                            Log.LogInfo("Duplicate rarity found for identifier: " + identifier);
                             itemRarityMap.remove(identifier);
                             itemRarityMap.put(identifier, MULTIPLE_CONFIG);
                         }
@@ -71,7 +72,8 @@ public class RarityConfig {
                 }
         );
 
-        // itemRarityMap.forEach((k, v) -> System.out.println("[Vanilla Enhancer Rarity] Key [" + k + "] [" + v + "]"));
+        Log.LogInfo("Loaded rarity config for " + itemRarityMap.size() + " items with " + itemRarityMap.values().stream().distinct().count() + " tiers");
+        itemRarityMap.forEach((k, v) -> Log.LogDebug("Found rarity key [" + k + "] [" + v + "]"));
     }
 
     public static void WriteConfig() {
@@ -81,7 +83,7 @@ public class RarityConfig {
 
             Yaml yaml = new Yaml(dumperOptions);
             yaml.dump(rarityYamlMap, writer);
-            System.out.println("[Vanilla Enhancer Rarity] Saved config.");
+            Log.LogInfo("Saved rarity config");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -227,7 +229,7 @@ public class RarityConfig {
     }
 
     public static CustomRarity getRarity(String identifier) {
-//        System.out.println("[Vanilla Enhancer Rarity] Get key: [" + identifier + "]");
+//        Log.LogDebug("[Vanilla Enhancer Rarity] Get key: [" + identifier + "]");
         return itemRarityOverrideMap.getOrDefault(identifier, itemRarityMap.getOrDefault(identifier, UNCLASSIFIED));
     }
 
@@ -237,7 +239,7 @@ public class RarityConfig {
         }
         itemRarityOverrideMap.remove(identifier);
         itemRarityOverrideMap.put(identifier, rarityOverrideMap.getOrDefault(customRarityStr, UNCLASSIFIED));
-//        System.out.println("[Vanilla Enhancer Rarity] Added server override: [" + identifier + "] [" + customRarityStr + "]");
+//        Log.LogDebug("[Vanilla Enhancer Rarity] Added server override: [" + identifier + "] [" + customRarityStr + "]");
     }
 
     public static void resetAll() {

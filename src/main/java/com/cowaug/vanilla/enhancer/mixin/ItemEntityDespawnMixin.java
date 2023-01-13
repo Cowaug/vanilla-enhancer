@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @SuppressWarnings("unused")
 @Mixin(ItemEntity.class)
@@ -20,7 +21,16 @@ public abstract class ItemEntityDespawnMixin extends Entity {
     private int currentAges = 0;
 
     @Shadow
+    private static int DESPAWN_AGE;
+
+    @Shadow
+    private static int NEVER_DESPAWN_AGE;
+
+    @Shadow
     private int itemAge;
+
+    @Shadow
+    public float uniqueOffset;
 
     @Shadow
     public abstract ItemStack getStack();
@@ -40,12 +50,25 @@ public abstract class ItemEntityDespawnMixin extends Entity {
 
     @Inject(method = "tick", at = @At("RETURN"))
     private void tick(CallbackInfo info) {
-        itemAge = itemAge % 360;
         CustomRarity rarity = RarityConfig.getRarity(Registries.ITEM.getId(getStack().getItem()).getPath());
+        int despawnTicks = rarity.getDepsawnTicks();
         currentAges++;
-        if (currentAges >= rarity.getDepsawnTicks() && rarity.getDepsawnTicks() > 0) {
+
+        if (itemAge != NEVER_DESPAWN_AGE) {
+            itemAge = NEVER_DESPAWN_AGE;
+        }
+
+        if (despawnTicks > 0 && currentAges >= despawnTicks) {
             this.discard();
         }
+
         setGlowing(rarity.isGlowing());
+    }
+
+    @Inject(method = "getItemAge", at = @At("RETURN"), cancellable = true)
+    public void getItemAge(CallbackInfoReturnable<Integer> cir) {
+        CustomRarity rarity = RarityConfig.getRarity(Registries.ITEM.getId(getStack().getItem()).getPath());
+        int despawnTicks = rarity.getDepsawnTicks();
+        cir.setReturnValue(currentAges * Math.max(DESPAWN_AGE / despawnTicks, 1));
     }
 }

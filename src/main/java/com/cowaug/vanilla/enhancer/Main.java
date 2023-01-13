@@ -1,6 +1,7 @@
 package com.cowaug.vanilla.enhancer;
 
 import com.cowaug.vanilla.enhancer.config.RarityConfig;
+import com.cowaug.vanilla.enhancer.utils.Log;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
@@ -16,12 +17,12 @@ public class Main implements ModInitializer {
     @Override
     public void onInitialize() {
         Main.serverPath = FabricLoader.getInstance().getGameDir().toString();
-        System.out.println("Vanilla Enhancer by Cowaug");
+        Log.LogInfo("Vanilla Enhancer by Cowaug");
 
         // Creating data directory (database and config files are stored there)
         File file = new File(serverPath = serverPath + "/mods/VanillaEnhancer");
         if (!file.exists() && !file.mkdirs())
-            throw new RuntimeException("[VanillaEnhancer] Error creating directory!");
+            throw new RuntimeException("Error creating config directory!");
 
         RarityConfig.LoadConfig();
 
