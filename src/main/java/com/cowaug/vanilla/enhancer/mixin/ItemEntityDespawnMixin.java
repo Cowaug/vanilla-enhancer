@@ -1,7 +1,7 @@
-package com.cowaug.vanillaplus.mixin;
+package com.cowaug.vanilla.enhancer.mixin;
 
-import com.cowaug.vanillaplus.config.RarityConfig;
-import com.cowaug.vanillaplus.mod.rarity.CustomRarity;
+import com.cowaug.vanilla.enhancer.config.RarityConfig;
+import com.cowaug.vanilla.enhancer.mod.rarity.CustomRarity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;

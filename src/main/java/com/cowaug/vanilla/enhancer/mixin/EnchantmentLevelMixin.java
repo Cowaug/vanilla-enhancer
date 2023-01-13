@@ -1,4 +1,4 @@
-package com.cowaug.vanillaplus.mixin;
+package com.cowaug.vanilla.enhancer.mixin;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.text.Text;

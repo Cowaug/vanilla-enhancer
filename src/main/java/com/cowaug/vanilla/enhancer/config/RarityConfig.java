@@ -1,6 +1,6 @@
-package com.cowaug.vanillaplus.config;
+package com.cowaug.vanilla.enhancer.config;
 
-import com.cowaug.vanillaplus.mod.rarity.CustomRarity;
+import com.cowaug.vanilla.enhancer.mod.rarity.CustomRarity;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.*;
 
-import static com.cowaug.vanillaplus.VanillaPlus.serverPath;
+import static com.cowaug.vanilla.enhancer.Main.serverPath;
 
 public class RarityConfig {
     public static final CustomRarity UNCLASSIFIED = new CustomRarity();

@@ -1,17 +1,15 @@
-package com.cowaug.vanillaplus.mixin;
+package com.cowaug.vanilla.enhancer.mixin;
 
-import com.cowaug.vanillaplus.Helper;
-import com.cowaug.vanillaplus.config.RarityConfig;
-import com.cowaug.vanillaplus.mod.rarity.CustomRarity;
+import com.cowaug.vanilla.enhancer.Helper;
+import com.cowaug.vanilla.enhancer.config.RarityConfig;
+import com.cowaug.vanilla.enhancer.mod.rarity.CustomRarity;
 import net.fabricmc.fabric.api.item.v1.FabricItemStack;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;

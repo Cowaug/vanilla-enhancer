@@ -1,4 +1,4 @@
-package com.cowaug.vanillaplus.mod.rarity;
+package com.cowaug.vanilla.enhancer.mod.rarity;
 
 import net.minecraft.util.Formatting;
 import org.apache.commons.compress.utils.Lists;

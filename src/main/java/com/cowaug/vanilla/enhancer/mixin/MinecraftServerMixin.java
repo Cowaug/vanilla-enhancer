@@ -1,4 +1,4 @@
-package com.cowaug.vanillaplus.mixin;
+package com.cowaug.vanilla.enhancer.mixin;
 
 import net.minecraft.scoreboard.ServerScoreboard;
 import net.minecraft.server.MinecraftServer;

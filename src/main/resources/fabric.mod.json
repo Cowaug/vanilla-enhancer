@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "id": "vanilla-plus",
+  "id": "vanilla-enhancer",
   "version": "1.19.3",
 
-  "name": "Vanilla Plus",
+  "name": "Vanilla Enhancer",
   "description": "Enhance exist vanilla features",
   "authors": [
     "Cowaug"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/Cowaug/vanilla-enhancer"
   },
 
   "license": "CC0-1.0",
@@ -19,7 +19,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.cowaug.vanillaplus.VanillaPlus"
+      "com.cowaug.vanilla.enhancer.Main"
     ]
   },
   "mixins": [
