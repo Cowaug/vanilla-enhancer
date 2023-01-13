@@ -6,6 +6,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.apache.commons.compress.utils.Lists;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileInputStream;
@@ -18,12 +19,20 @@ import static com.cowaug.vanilla.enhancer.Main.serverPath;
 
 public class RarityConfig {
     public static final CustomRarity UNCLASSIFIED = new CustomRarity();
-    public static final CustomRarity MULTIPLE_CONFIG = new CustomRarity("HyperTier_0m_6000_true");
+    public static final CustomRarity MULTIPLE_CONFIG = new CustomRarity("Hmm!?_0m_6000_true");
     private static final String CONFIG_FILE = "/rarity.yaml";
     private static Map<String, List<String>> rarityYamlMap; // rarity tier, item identifier
-    private static final Map<String, CustomRarity> itemRarityMap = new HashMap<>(); // item identifier, rarity tier
-    private static final Map<String, CustomRarity> itemRarityOverrideMap = new HashMap<>(); // item identifier, override rarity tier
-    private static final Map<String, CustomRarity> rarityOverrideMap = new HashMap<>();// string, override rarity tier
+    private static final Map<String, CustomRarity> itemRarityMap = new LinkedHashMap<>(); // item identifier, rarity tier
+    private static final Map<String, CustomRarity> itemRarityOverrideMap = new LinkedHashMap<>(); // item identifier, override rarity tier
+    private static final Map<String, CustomRarity> rarityOverrideMap = new LinkedHashMap<>();// string, override rarity tier
+
+    public static DumperOptions dumperOptions;
+
+    static {
+        dumperOptions = new DumperOptions();
+        dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        dumperOptions.setDefaultScalarStyle(DumperOptions.ScalarStyle.PLAIN);
+    }
 
     public static void LoadConfig() {
         resetAll();
@@ -34,12 +43,12 @@ public class RarityConfig {
             rarityYamlMap = yaml.load(inputStream);
             System.out.println(rarityYamlMap);
         } catch (FileNotFoundException e) {
-            System.out.println("[Vanilla Plus] Config not found, creating new one...");
+            System.out.println("[Vanilla Enhancer Rarity] Config not found, creating new one...");
             CreateDefaultConfig();
             WriteConfig();
         }
 
-        for (Identifier id : Registries.ITEM.getIds()) {
+        for (Identifier id : Registries.ITEM.getIds().stream().sorted().toList()) {
             AddRemainsItemToConfig(id.getPath());
         }
         WriteConfig();
@@ -62,16 +71,17 @@ public class RarityConfig {
         PrintWriter writer;
         try {
             writer = new PrintWriter(serverPath + CONFIG_FILE);
-            Yaml yaml = new Yaml();
+
+            Yaml yaml = new Yaml(dumperOptions);
             yaml.dump(rarityYamlMap, writer);
-            System.out.println("[Vanilla Plus] Saved config");
+            System.out.println("[Vanilla Enhancer Rarity] Saved config.");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
     private static void CreateDefaultConfig() {
-        rarityYamlMap = new HashMap<>();
+        rarityYamlMap = new LinkedHashMap<>();
 
 //        List<String> colorComment = Lists.newArrayList();
 //        for (Formatting f : Formatting.values()) {
@@ -80,6 +90,7 @@ public class RarityConfig {
 
         // default rarity
         List<CustomRarity> defaultRarity = List.of(
+                new CustomRarity("Everywhere", 1200, false, Formatting.GRAY),
                 new CustomRarity("Common", 6000, false, Formatting.WHITE),
                 new CustomRarity("Uncommon", 12000, false, Formatting.GREEN),
                 new CustomRarity("Rare", 1728000, true, Formatting.AQUA),
@@ -88,9 +99,10 @@ public class RarityConfig {
                 new CustomRarity("Ultimate", -1, true, Formatting.DARK_RED)
         );
 
-        List<String> commonItems = Lists.newArrayList();
-        List<String> uncommonItems = Lists.newArrayList();
-        List<String> rareItems = Lists.newArrayList();
+        List<String> everywhereItems = new ArrayList<>(List.of("some_everywhere_identifier"));
+        List<String> commonItems = new ArrayList<>(List.of("some_common_identifier"));
+        List<String> uncommonItems = new ArrayList<>(List.of("some_uncommon_identifier"));
+        List<String> rareItems = new ArrayList<>(List.of("some_rare_identifier"));
         List<String> legendaryItems = new ArrayList<>(List.of(
                 "creeper_banner_pattern",
                 "skull_banner_pattern",
@@ -168,12 +180,13 @@ public class RarityConfig {
                 "enchanted_golden_apple"
         ));
 
-        rarityYamlMap.put(defaultRarity.get(0).toString(), commonItems);
-        rarityYamlMap.put(defaultRarity.get(1).toString(), uncommonItems);
-        rarityYamlMap.put(defaultRarity.get(2).toString(), rareItems);
-        rarityYamlMap.put(defaultRarity.get(3).toString(), legendaryItems);
-        rarityYamlMap.put(defaultRarity.get(4).toString(), mythicItems);
-        rarityYamlMap.put(defaultRarity.get(5).toString(), ultimateItems);
+        rarityYamlMap.put(defaultRarity.get(0).toString(), everywhereItems);
+        rarityYamlMap.put(defaultRarity.get(1).toString(), commonItems);
+        rarityYamlMap.put(defaultRarity.get(2).toString(), uncommonItems);
+        rarityYamlMap.put(defaultRarity.get(3).toString(), rareItems);
+        rarityYamlMap.put(defaultRarity.get(4).toString(), legendaryItems);
+        rarityYamlMap.put(defaultRarity.get(5).toString(), mythicItems);
+        rarityYamlMap.put(defaultRarity.get(6).toString(), ultimateItems);
     }
 
     private static void AddRemainsItemToConfig(String identifier) {
