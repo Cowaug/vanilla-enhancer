@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static com.cowaug.vanilla.enhancer.Main.serverPath;
 
-public class ConfigHelper {
+public class ConfigIo {
     public static DumperOptions dumperOptions;
 
     static {

@@ -1,4 +1,4 @@
-package com.cowaug.vanilla.enhancer.utils;
+package com.cowaug.vanilla.enhancer.config;
 
 public class Helper {
     @SuppressWarnings("unchecked")

@@ -1,5 +1,6 @@
 package com.cowaug.vanilla.enhancer.mixin;
 
+import com.cowaug.vanilla.enhancer.config.GeneralConfig;
 import com.cowaug.vanilla.enhancer.config.RarityConfig;
 import com.cowaug.vanilla.enhancer.mod.rarity.CustomRarity;
 import net.minecraft.entity.Entity;
@@ -19,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ItemEntity.class)
 public abstract class ItemEntityDespawnMixin extends Entity {
     private int currentAges = 0;
+    private int countingTick = 0;
 
     @Shadow
     private static int DESPAWN_AGE;
@@ -52,7 +54,9 @@ public abstract class ItemEntityDespawnMixin extends Entity {
     private void tick(CallbackInfo info) {
         CustomRarity rarity = RarityConfig.getRarity(Registries.ITEM.getId(getStack().getItem()).getPath());
         int despawnTicks = rarity.getDepsawnTicks();
-        currentAges++;
+        countingTick++;
+        if (!world.isClient())
+            currentAges += GeneralConfig.getAgeIncreasePerTick();
 
         if (itemAge != NEVER_DESPAWN_AGE) {
             itemAge = NEVER_DESPAWN_AGE;
@@ -69,6 +73,8 @@ public abstract class ItemEntityDespawnMixin extends Entity {
     public void getItemAge(CallbackInfoReturnable<Integer> cir) {
         CustomRarity rarity = RarityConfig.getRarity(Registries.ITEM.getId(getStack().getItem()).getPath());
         int despawnTicks = rarity.getDepsawnTicks();
-        cir.setReturnValue(currentAges * Math.max(DESPAWN_AGE / despawnTicks, 1));
+        float minSpeed = GeneralConfig.getMinEntityRotateSpeed();
+        float maxSpeed = GeneralConfig.getMaxEntityRotateSpeed();
+        cir.setReturnValue((int) (countingTick * Math.max(minSpeed, Math.min(maxSpeed, DESPAWN_AGE * 1f / despawnTicks))));
     }
 }

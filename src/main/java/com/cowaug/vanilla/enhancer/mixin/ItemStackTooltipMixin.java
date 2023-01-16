@@ -1,6 +1,7 @@
 package com.cowaug.vanilla.enhancer.mixin;
 
-import com.cowaug.vanilla.enhancer.utils.Helper;
+import com.cowaug.vanilla.enhancer.config.GeneralConfig;
+import com.cowaug.vanilla.enhancer.config.Helper;
 import com.cowaug.vanilla.enhancer.config.RarityConfig;
 import com.cowaug.vanilla.enhancer.mod.rarity.CustomRarity;
 import net.fabricmc.fabric.api.item.v1.FabricItemStack;
@@ -68,16 +69,16 @@ public abstract class ItemStackTooltipMixin implements FabricItemStack {
     public void inventoryTick(World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
         ItemStack thisItemStack = Helper.CastTo(ItemStack.class, this);
         String itemIdentifier = Registries.ITEM.getId(thisItemStack.getItem()).getPath();
-        if (world.isClient()) {
-            NbtCompound clientNbt = getSubNbt("CustomRarity");
-            if (clientNbt != null) {
-                RarityConfig.addOverride(itemIdentifier, clientNbt.getString("CustomRarity"));
-            }
-        } else {
+        if (!world.isClient()) {
             CustomRarity rarity = RarityConfig.getRarity(itemIdentifier);
             NbtCompound serverNbt = new NbtCompound();
             serverNbt.putString("CustomRarity", rarity.toString());
             setSubNbt("CustomRarity", serverNbt);
+        } else if (GeneralConfig.isAllowServerOverride()) {
+            NbtCompound clientNbt = getSubNbt("CustomRarity");
+            if (clientNbt != null) {
+                RarityConfig.addOverride(itemIdentifier, clientNbt.getString("CustomRarity"));
+            }
         }
     }
 }

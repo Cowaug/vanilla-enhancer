@@ -1,5 +1,6 @@
 package com.cowaug.vanilla.enhancer;
 
+import com.cowaug.vanilla.enhancer.config.GeneralConfig;
 import com.cowaug.vanilla.enhancer.config.RarityConfig;
 import com.cowaug.vanilla.enhancer.utils.Log;
 import net.fabricmc.api.ModInitializer;
@@ -25,10 +26,12 @@ public class Main implements ModInitializer {
             throw new RuntimeException("Error creating config directory!");
 
         RarityConfig.LoadConfig();
+        GeneralConfig.LoadConfig();
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("rr")
                 .executes(context -> {
                     RarityConfig.LoadConfig();
+                    GeneralConfig.LoadConfig();
                     context.getSource().sendMessage(Text.literal("Reloaded rarity config!"));
                     return 1;
                 })));

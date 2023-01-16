@@ -25,14 +25,14 @@ public class RarityConfig {
     public static void LoadConfig() {
         resetAll();
 
-        rarityYamlMap = ConfigHelper.LoadConfig(CONFIG_FILE);
+        rarityYamlMap = ConfigIo.LoadConfig(CONFIG_FILE);
         if (rarityYamlMap == null) {
             CreateDefaultConfig();
         }
         for (Identifier id : Registries.ITEM.getIds().stream().sorted().toList()) {
             AddRemainsItemToConfig(id.getPath());
         }
-        ConfigHelper.WriteConfig(CONFIG_FILE, rarityYamlMap);
+        ConfigIo.WriteConfig(CONFIG_FILE, rarityYamlMap);
 
         rarityYamlMap.forEach((k, l) -> {
                     CustomRarity customRarity = new CustomRarity(k);
