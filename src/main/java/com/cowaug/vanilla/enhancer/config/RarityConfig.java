@@ -7,57 +7,32 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.apache.commons.compress.utils.Lists;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.PrintWriter;
 import java.util.*;
 
-import static com.cowaug.vanilla.enhancer.Main.serverPath;
-
 public class RarityConfig {
+    private static final String CONFIG_FILE = "/rarity.yaml";
+
     public static final CustomRarity UNCLASSIFIED = new CustomRarity();
     public static final CustomRarity MULTIPLE_CONFIG = new CustomRarity("Hmm!?_0m_6000_true");
-    private static final String CONFIG_FILE = "/rarity.yaml";
+
     private static Map<String, List<String>> rarityYamlMap; // rarity tier, item identifier
+
     private static final Map<String, CustomRarity> itemRarityMap = new LinkedHashMap<>(); // item identifier, rarity tier
     private static final Map<String, CustomRarity> itemRarityOverrideMap = new LinkedHashMap<>(); // item identifier, override rarity tier
     private static final Map<String, CustomRarity> rarityOverrideMap = new LinkedHashMap<>();// string, override rarity tier
 
-    public static DumperOptions dumperOptions;
-
-    static {
-        dumperOptions = new DumperOptions();
-        dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        dumperOptions.setDefaultScalarStyle(DumperOptions.ScalarStyle.PLAIN);
-        dumperOptions.setIndent(3);
-        dumperOptions.setIndicatorIndent(2);
-    }
-
     public static void LoadConfig() {
         resetAll();
-        InputStream inputStream;
-        try {
-            inputStream = new FileInputStream(serverPath + CONFIG_FILE);
-            Yaml yaml = new Yaml();
-            rarityYamlMap = yaml.load(inputStream);
-            Log.LogDebug(rarityYamlMap.toString());
-        } catch (FileNotFoundException e) {
-            Log.LogInfo("Rarity config not found, creating new one...");
-        }
 
+        rarityYamlMap = ConfigHelper.LoadConfig(CONFIG_FILE);
         if (rarityYamlMap == null) {
             CreateDefaultConfig();
-            WriteConfig();
         }
-
         for (Identifier id : Registries.ITEM.getIds().stream().sorted().toList()) {
             AddRemainsItemToConfig(id.getPath());
         }
-        WriteConfig();
+        ConfigHelper.WriteConfig(CONFIG_FILE, rarityYamlMap);
 
         rarityYamlMap.forEach((k, l) -> {
                     CustomRarity customRarity = new CustomRarity(k);
@@ -71,31 +46,12 @@ public class RarityConfig {
                     });
                 }
         );
-
         Log.LogInfo("Loaded rarity config for " + itemRarityMap.size() + " items with " + itemRarityMap.values().stream().distinct().count() + " tiers");
         itemRarityMap.forEach((k, v) -> Log.LogDebug("Found rarity key [" + k + "] [" + v + "]"));
     }
 
-    public static void WriteConfig() {
-        PrintWriter writer;
-        try {
-            writer = new PrintWriter(serverPath + CONFIG_FILE);
-
-            Yaml yaml = new Yaml(dumperOptions);
-            yaml.dump(rarityYamlMap, writer);
-            Log.LogInfo("Saved rarity config");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
     private static void CreateDefaultConfig() {
         rarityYamlMap = new LinkedHashMap<>();
-
-//        List<String> colorComment = Lists.newArrayList();
-//        for (Formatting f : Formatting.values()) {
-//            colorComment.add(f.getName() + ": " + f.getCode());
-//        }
 
         // default rarity
         List<CustomRarity> defaultRarity = List.of(
