@@ -32,7 +32,9 @@ public abstract class EntityColorMixin {
                 ItemEntity itemEntity = Helper.CastTo(ItemEntity.class, this);
                 CustomRarity rarity = RarityConfig.getRarity(Registries.ITEM.getId(itemEntity.getStack().getItem()).getPath());
                 Integer colorCode = rarity.getColor();
-                if (colorCode != null) {
+                if (rarity.isDefault()) {
+                    cir.setReturnValue(0);
+                } else if (colorCode != null) {
                     cir.setReturnValue(colorCode);
                 }
             }

@@ -1,5 +1,6 @@
 package com.cowaug.vanilla.enhancer.config;
 
+import com.cowaug.vanilla.enhancer.mod.particle.CustomParticles;
 import com.cowaug.vanilla.enhancer.mod.rarity.CustomRarity;
 import com.cowaug.vanilla.enhancer.utils.Log;
 import net.minecraft.registry.Registries;
@@ -36,6 +37,10 @@ public class RarityConfig {
 
         rarityYamlMap.forEach((k, l) -> {
                     CustomRarity customRarity = new CustomRarity(k);
+                    if(customRarity.isGlowing()) {
+                        CustomParticles.AddParticle(customRarity.getName(), customRarity.getColor());
+                    }
+
                     l.forEach(identifier -> {
                         if (itemRarityMap.containsKey(identifier)) {
                             Log.LogInfo("Duplicate rarity found for identifier: " + identifier);

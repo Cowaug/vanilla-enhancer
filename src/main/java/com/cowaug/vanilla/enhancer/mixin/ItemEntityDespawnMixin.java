@@ -2,11 +2,13 @@ package com.cowaug.vanilla.enhancer.mixin;
 
 import com.cowaug.vanilla.enhancer.config.GeneralConfig;
 import com.cowaug.vanilla.enhancer.config.RarityConfig;
+import com.cowaug.vanilla.enhancer.mod.particle.CustomParticles;
 import com.cowaug.vanilla.enhancer.mod.rarity.CustomRarity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -55,18 +57,25 @@ public abstract class ItemEntityDespawnMixin extends Entity {
         CustomRarity rarity = RarityConfig.getRarity(Registries.ITEM.getId(getStack().getItem()).getPath());
         int despawnTicks = rarity.getDepsawnTicks();
         countingTick++;
-        if (!world.isClient())
-            currentAges += GeneralConfig.getAgeIncreasePerTick();
 
         if (itemAge != NEVER_DESPAWN_AGE) {
             itemAge = NEVER_DESPAWN_AGE;
         }
 
-        if (despawnTicks > 0 && currentAges >= despawnTicks) {
-            this.discard();
+        if (!world.isClient()) {
+            currentAges += GeneralConfig.getAgeIncreasePerTick();
+            if (despawnTicks > 0 && currentAges >= despawnTicks) {
+                this.discard();
+            }
+
+            setGlowing(rarity.isGlowing() && GeneralConfig.isGlowBorderOnItem());
+        } else if (rarity.isGlowing() && GeneralConfig.isSpawnParticleOnItem()) {
+            DefaultParticleType particle = CustomParticles.GetParticle(rarity.getName());
+            if (particle != null && countingTick % 10 == 0 && this.isOnGround()) {
+                world.addParticle(particle, getX(), getY() + 0.4, getZ(), 0, 0, 0);
+            }
         }
 
-        setGlowing(rarity.isGlowing());
     }
 
     @Inject(method = "getItemAge", at = @At("RETURN"), cancellable = true)

@@ -14,7 +14,9 @@ public class GeneralConfig {
         allowServerOverride,
         obfuscateServer,
         minEntityRotate,
-        maxEntityRotate
+        maxEntityRotate,
+        spawnParticleOnItem,
+        glowBorderOnItem
     }
 
 
@@ -48,6 +50,14 @@ public class GeneralConfig {
 
     public static float getMaxEntityRotateSpeed(){
         return getConfig(ConfigName.maxEntityRotate, 1.5f);
+    }
+
+    public static boolean isSpawnParticleOnItem(){
+        return getConfig(ConfigName.spawnParticleOnItem, true);
+    }
+
+    public static boolean isGlowBorderOnItem(){
+        return getConfig(ConfigName.glowBorderOnItem, true);
     }
 
     @SuppressWarnings("unchecked")
