@@ -8,7 +8,8 @@
     "MinecraftServerMixin",
     "ItemStackTooltipMixin",
     "EntityColorMixin",
-    "EnchantmentLevelMixin"
+    "EnchantmentLevelMixin",
+    "PlayerManagerMixin"
   ],
   "client": [
   ],

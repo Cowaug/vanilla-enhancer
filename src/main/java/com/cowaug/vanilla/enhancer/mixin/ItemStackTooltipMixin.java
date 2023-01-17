@@ -1,12 +1,9 @@
 package com.cowaug.vanilla.enhancer.mixin;
 
-import com.cowaug.vanilla.enhancer.config.GeneralConfig;
 import com.cowaug.vanilla.enhancer.config.Helper;
 import com.cowaug.vanilla.enhancer.config.RarityConfig;
-import com.cowaug.vanilla.enhancer.mod.rarity.CustomRarity;
 import net.fabricmc.fabric.api.item.v1.FabricItemStack;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -15,13 +12,11 @@ import net.minecraft.registry.Registries;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -63,22 +58,5 @@ public abstract class ItemStackTooltipMixin implements FabricItemStack {
         ItemStack thisItemStack = Helper.CastTo(ItemStack.class, this);
         if (!cir.isCancelled())
             cir.setReturnValue(cir.getReturnValue().formatted(RarityConfig.getRarity(Registries.ITEM.getId(thisItemStack.getItem()).getPath()).getFormats()));
-    }
-
-    @Inject(method = "inventoryTick", at = @At("RETURN"))
-    public void inventoryTick(World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
-        ItemStack thisItemStack = Helper.CastTo(ItemStack.class, this);
-        String itemIdentifier = Registries.ITEM.getId(thisItemStack.getItem()).getPath();
-        if (!world.isClient()) {
-            CustomRarity rarity = RarityConfig.getRarity(itemIdentifier);
-            NbtCompound serverNbt = new NbtCompound();
-            serverNbt.putString("CustomRarity", rarity.toString());
-            setSubNbt("CustomRarity", serverNbt);
-        } else if (GeneralConfig.isAllowServerOverride()) {
-            NbtCompound clientNbt = getSubNbt("CustomRarity");
-            if (clientNbt != null) {
-                RarityConfig.addOverride(itemIdentifier, clientNbt.getString("CustomRarity"));
-            }
-        }
     }
 }

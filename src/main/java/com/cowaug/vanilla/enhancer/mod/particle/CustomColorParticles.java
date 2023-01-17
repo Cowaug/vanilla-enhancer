@@ -1,36 +1,24 @@
 package com.cowaug.vanilla.enhancer.mod.particle;
 
-import com.cowaug.vanilla.enhancer.utils.Log;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
 
-public class CustomParticles {
+public class CustomColorParticles {
     private static final HashMap<String, DefaultParticleType> particleHashMap = new HashMap<>();
 
-    public static DefaultParticleType GetParticle(String name) {
-        return particleHashMap.getOrDefault(name, null);
+    public static DefaultParticleType GetParticle(String colorName) {
+        return particleHashMap.getOrDefault(colorName, null);
     }
 
-    public static void AddParticle(String name, Integer colorInt) {
-        int size = particleHashMap.size();
-        if (size >= 4) {
-            Log.LogError("Max particle added, do nothing");
-            return;
-        }
-
-        if (particleHashMap.containsKey(name)) {
-            Log.LogError("Particle already exist with the same name, do nothing");
-            return;
-        }
-
+    public static void AddParticle(String colorName, Integer colorInt) {
         if (colorInt == null) {
-            Log.LogError("Null color for particle " + name);
             return;
         }
 
@@ -41,6 +29,12 @@ public class CustomParticles {
         ParticleFactoryRegistry.getInstance().register(newParticle,
                 spriteProvider -> new ColorParticle.ColorFactory(spriteProvider, colorInt));
 
-        particleHashMap.put(name, newParticle);
+        particleHashMap.put(colorName, newParticle);
+    }
+
+    public static void init() {
+        for (Formatting format : Formatting.values()) {
+            AddParticle(format.getName(), format.getColorValue());
+        }
     }
 }

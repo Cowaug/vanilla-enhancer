@@ -60,6 +60,16 @@ public class CustomRarity {
         }
     }
 
+    public String getColorFormatName() {
+        char color = formatCode.replaceAll("[^0-9a-f]", "").charAt(0);
+        Formatting formatting = Formatting.byCode(color);
+        if (formatting != null) {
+            return formatting.getName();
+        } else {
+            return null;
+        }
+    }
+
     public Formatting[] getFormats() {
         List<Formatting> formattingArr = Lists.newArrayList();
         for (char c : formatCode.toCharArray()) {

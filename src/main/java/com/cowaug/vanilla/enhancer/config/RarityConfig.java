@@ -1,6 +1,5 @@
 package com.cowaug.vanilla.enhancer.config;
 
-import com.cowaug.vanilla.enhancer.mod.particle.CustomParticles;
 import com.cowaug.vanilla.enhancer.mod.rarity.CustomRarity;
 import com.cowaug.vanilla.enhancer.utils.Log;
 import net.minecraft.registry.Registries;
@@ -12,16 +11,14 @@ import org.apache.commons.compress.utils.Lists;
 import java.util.*;
 
 public class RarityConfig {
-    private static final String CONFIG_FILE = "/rarity.yaml";
-
     public static final CustomRarity UNCLASSIFIED = new CustomRarity();
     public static final CustomRarity MULTIPLE_CONFIG = new CustomRarity("Hmm!?_0m_6000_true");
-
-    private static Map<String, List<String>> rarityYamlMap; // rarity tier, item identifier
-
+    private static final String CONFIG_FILE = "/rarity.yaml";
     private static final Map<String, CustomRarity> itemRarityMap = new LinkedHashMap<>(); // item identifier, rarity tier
     private static final Map<String, CustomRarity> itemRarityOverrideMap = new LinkedHashMap<>(); // item identifier, override rarity tier
     private static final Map<String, CustomRarity> rarityOverrideMap = new LinkedHashMap<>();// string, override rarity tier
+    private static final List<String> itemRarityMapNetworkSync = Lists.newArrayList();
+    private static Map<String, List<String>> rarityYamlMap; // rarity tier, item identifier
 
     public static void LoadConfig() {
         resetAll();
@@ -37,9 +34,6 @@ public class RarityConfig {
 
         rarityYamlMap.forEach((k, l) -> {
                     CustomRarity customRarity = new CustomRarity(k);
-                    if(customRarity.isGlowing()) {
-                        CustomParticles.AddParticle(customRarity.getName(), customRarity.getColor());
-                    }
 
                     l.forEach(identifier -> {
                         if (itemRarityMap.containsKey(identifier)) {
@@ -52,7 +46,12 @@ public class RarityConfig {
                 }
         );
         Log.LogInfo("Loaded rarity config for " + itemRarityMap.size() + " items with " + itemRarityMap.values().stream().distinct().count() + " tiers");
-        itemRarityMap.forEach((k, v) -> Log.LogDebug("Found rarity key [" + k + "] [" + v + "]"));
+
+        itemRarityMap.forEach((k, v) -> {
+            Log.LogDebug("Found rarity key [" + k + "] [" + v + "]");
+
+            itemRarityMapNetworkSync.add(k + ";;" + v.toString());
+        });
     }
 
     private static void CreateDefaultConfig() {
@@ -194,6 +193,10 @@ public class RarityConfig {
         return itemRarityOverrideMap.getOrDefault(identifier, itemRarityMap.getOrDefault(identifier, UNCLASSIFIED));
     }
 
+    public static List<String> getAllRaritySyncList() {
+        return itemRarityMapNetworkSync;
+    }
+
     public static void addOverride(String identifier, String customRarityStr) {
         if (!rarityOverrideMap.containsKey(customRarityStr)) {
             rarityOverrideMap.put(customRarityStr, new CustomRarity(customRarityStr));
@@ -207,6 +210,7 @@ public class RarityConfig {
         itemRarityMap.clear();
         rarityOverrideMap.clear();
         itemRarityOverrideMap.clear();
+        itemRarityMapNetworkSync.clear();
     }
 }
 

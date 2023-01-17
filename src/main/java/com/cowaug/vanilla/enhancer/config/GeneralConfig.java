@@ -9,17 +9,6 @@ public class GeneralConfig {
     private static final String CONFIG_FILE = "/general.yaml";
     private static Map<String, String> generalConfigYamlMap; // key, value
 
-    public enum ConfigName {
-        agingPerTick,
-        allowServerOverride,
-        obfuscateServer,
-        minEntityRotate,
-        maxEntityRotate,
-        spawnParticleOnItem,
-        glowBorderOnItem
-    }
-
-
     public static void LoadConfig() {
         generalConfigYamlMap = ConfigIo.LoadConfig(CONFIG_FILE);
         if (generalConfigYamlMap == null) {
@@ -44,20 +33,20 @@ public class GeneralConfig {
         return getConfig(ConfigName.obfuscateServer, true);
     }
 
-    public static float getMinEntityRotateSpeed(){
+    public static float getMinEntityRotateSpeed() {
         return getConfig(ConfigName.minEntityRotate, 0.8f);
     }
 
-    public static float getMaxEntityRotateSpeed(){
+    public static float getMaxEntityRotateSpeed() {
         return getConfig(ConfigName.maxEntityRotate, 1.5f);
     }
 
-    public static boolean isSpawnParticleOnItem(){
+    public static boolean isSpawnParticleOnItem() {
         return getConfig(ConfigName.spawnParticleOnItem, true);
     }
 
-    public static boolean isGlowBorderOnItem(){
-        return getConfig(ConfigName.glowBorderOnItem, true);
+    public static boolean isGlowBorderOnItem() {
+        return getConfig(ConfigName.glowBorderOnItem, false);
     }
 
     @SuppressWarnings("unchecked")
@@ -91,6 +80,16 @@ public class GeneralConfig {
         }
 
         return defaultValue;
+    }
+
+    public enum ConfigName {
+        agingPerTick,
+        allowServerOverride,
+        obfuscateServer,
+        minEntityRotate,
+        maxEntityRotate,
+        spawnParticleOnItem,
+        glowBorderOnItem
     }
 }
 

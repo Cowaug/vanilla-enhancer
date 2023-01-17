@@ -23,7 +23,7 @@ public class ConfigIo {
         dumperOptions.setIndicatorIndent(2);
     }
 
-    public static <K, V> void WriteConfig(String configFilename, Map<K, V>  objectMap) {
+    public static <K, V> void WriteConfig(String configFilename, Map<K, V> objectMap) {
         PrintWriter writer;
         try {
             writer = new PrintWriter(serverPath + configFilename);
@@ -45,7 +45,7 @@ public class ConfigIo {
             Log.LogDebug(loadedData.toString());
             return loadedData;
         } catch (FileNotFoundException e) {
-            Log.LogInfo( configFilename + " not found");
+            Log.LogInfo(configFilename + " not found");
         }
         return null;
     }

@@ -1,7 +1,6 @@
 package com.cowaug.vanilla.enhancer.mixin;
 
 import com.cowaug.vanilla.enhancer.config.GeneralConfig;
-import net.minecraft.scoreboard.ServerScoreboard;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.ServerMetadata;
@@ -27,7 +26,7 @@ public class MinecraftServerMixin {
 
     @Inject(method = "tick", at = @At("RETURN"))
     public void tick(CallbackInfo info) {
-        if(!GeneralConfig.isObfuscateServer()){
+        if (!GeneralConfig.isObfuscateServer()) {
             return;
         }
         int maxPlayerCount = playerManager.getMaxPlayerCount() * 2;

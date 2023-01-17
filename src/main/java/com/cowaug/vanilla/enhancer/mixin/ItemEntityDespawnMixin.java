@@ -2,7 +2,7 @@ package com.cowaug.vanilla.enhancer.mixin;
 
 import com.cowaug.vanilla.enhancer.config.GeneralConfig;
 import com.cowaug.vanilla.enhancer.config.RarityConfig;
-import com.cowaug.vanilla.enhancer.mod.particle.CustomParticles;
+import com.cowaug.vanilla.enhancer.mod.particle.CustomColorParticles;
 import com.cowaug.vanilla.enhancer.mod.rarity.CustomRarity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -21,27 +21,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @SuppressWarnings("unused")
 @Mixin(ItemEntity.class)
 public abstract class ItemEntityDespawnMixin extends Entity {
-    private int currentAges = 0;
-    private int countingTick = 0;
-
     @Shadow
     private static int DESPAWN_AGE;
-
     @Shadow
     private static int NEVER_DESPAWN_AGE;
-
-    @Shadow
-    private int itemAge;
-
     @Shadow
     public float uniqueOffset;
-
+    private int currentAges = 0;
+    private int countingTick = 0;
     @Shadow
-    public abstract ItemStack getStack();
+    private int itemAge;
 
     public ItemEntityDespawnMixin(EntityType<?> type, World world) {
         super(type, world);
     }
+
+    @Shadow
+    public abstract ItemStack getStack();
 
     /**
      * /execute as @e[type=item,name=!Egg] run data merge entity @s {Age: -32768, Glowing: 0}
@@ -70,7 +66,7 @@ public abstract class ItemEntityDespawnMixin extends Entity {
 
             setGlowing(rarity.isGlowing() && GeneralConfig.isGlowBorderOnItem());
         } else if (rarity.isGlowing() && GeneralConfig.isSpawnParticleOnItem()) {
-            DefaultParticleType particle = CustomParticles.GetParticle(rarity.getName());
+            DefaultParticleType particle = CustomColorParticles.GetParticle(rarity.getColorFormatName());
             if (particle != null && countingTick % 10 == 0 && this.isOnGround()) {
                 world.addParticle(particle, getX(), getY() + 0.4, getZ(), 0, 0, 0);
             }

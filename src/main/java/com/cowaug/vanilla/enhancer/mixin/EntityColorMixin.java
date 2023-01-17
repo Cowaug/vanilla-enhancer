@@ -19,11 +19,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public abstract class EntityColorMixin {
     @Shadow
-    @Nullable
-    public abstract AbstractTeam getScoreboardTeam();
+    private EntityType<?> type;
 
     @Shadow
-    private EntityType<?> type;
+    @Nullable
+    public abstract AbstractTeam getScoreboardTeam();
 
     @Inject(method = "getTeamColorValue()I", at = @At("RETURN"), cancellable = true)
     public void injectChangeColorValue(CallbackInfoReturnable<Integer> cir) {
