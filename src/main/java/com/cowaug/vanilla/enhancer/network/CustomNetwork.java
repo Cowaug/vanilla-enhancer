@@ -1,5 +1,6 @@
 package com.cowaug.vanilla.enhancer.network;
 
+import com.cowaug.vanilla.enhancer.config.GeneralConfig;
 import com.cowaug.vanilla.enhancer.config.RarityConfig;
 import com.cowaug.vanilla.enhancer.utils.Log;
 import net.fabricmc.api.EnvType;
@@ -50,6 +51,9 @@ public class CustomNetwork {
         }
 
         ClientPlayNetworking.registerGlobalReceiver(CustomNetwork.CUSTOM_RARITY_SYNC, (client, handler, buf, responseSender) -> {
+            if (!GeneralConfig.isAllowServerOverride()) {
+                return;
+            }
             int size = buf.readInt();
             Log.LogInfo("Received " + size + " items config from server");
             for (int i = 0; i < size; i++) {

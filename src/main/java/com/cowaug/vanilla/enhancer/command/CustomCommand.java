@@ -28,7 +28,7 @@ public class CustomCommand {
                 })));
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("reload-rarity")
-                .then(argument("url", StringArgumentType.string()).executes(context -> {
+                .then(argument("url", StringArgumentType.greedyString()).executes(context -> {
                     String url = StringArgumentType.getString(context, "url");
 
                     RarityConfig.LoadConfig(url);
@@ -39,7 +39,7 @@ public class CustomCommand {
                 }))));
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("reload-general")
-                .then(argument("url", StringArgumentType.string()).executes(context -> {
+                .then(argument("url", StringArgumentType.greedyString()).executes(context -> {
                     String url = StringArgumentType.getString(context, "url");
 
                     GeneralConfig.LoadConfig(url);

@@ -10,8 +10,6 @@ public class GeneralConfig {
     private static Map<String, String> generalConfigYamlMap; // key, value
 
     public static void LoadConfig(String externalUrl) {
-        generalConfigYamlMap.clear();
-
         if (externalUrl != null) {
             generalConfigYamlMap = ConfigIo.LoadConfigFromUrl(externalUrl);
         }
