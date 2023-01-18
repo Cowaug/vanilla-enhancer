@@ -6,7 +6,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.*;
 
@@ -17,7 +16,7 @@ public class RarityConfig {
     private static final Map<String, CustomRarity> itemRarityMap = new LinkedHashMap<>(); // item identifier, rarity tier
     private static final Map<String, CustomRarity> itemRarityOverrideMap = new LinkedHashMap<>(); // item identifier, override rarity tier
     private static final Map<String, CustomRarity> rarityOverrideMap = new LinkedHashMap<>();// string, override rarity tier
-    private static final List<String> itemRarityMapNetworkSync = Lists.newArrayList();
+    private static final List<String> itemRarityMapNetworkSync = new ArrayList<>();
     private static Map<String, List<String>> rarityYamlMap; // rarity tier, item identifier
 
     public static void LoadConfig() {
@@ -172,7 +171,7 @@ public class RarityConfig {
     public static Text getRarityText(String identifier, boolean useDefaultFormat) {
         CustomRarity rarity = getRarity(identifier);
 
-        List<Formatting> formattingArr = Lists.newArrayList();
+        List<Formatting> formattingArr = new ArrayList<>();
 
         if (useDefaultFormat) {
             formattingArr.add(Formatting.DARK_GRAY);

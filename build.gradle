@@ -32,8 +32,7 @@ dependencies {
 
 	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
 
-	include "org.yaml:snakeyaml:${project.snake_yaml_version}"
-	modImplementation "org.yaml:snakeyaml:${project.snake_yaml_version}"
+    include modImplementation("org.yaml:snakeyaml:${project.snake_yaml_version}")
 }
 
 processResources {

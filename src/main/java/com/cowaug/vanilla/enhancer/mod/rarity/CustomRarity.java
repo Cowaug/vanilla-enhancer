@@ -1,9 +1,9 @@
 package com.cowaug.vanilla.enhancer.mod.rarity;
 
 import net.minecraft.util.Formatting;
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomRarity {
@@ -71,7 +71,7 @@ public class CustomRarity {
     }
 
     public Formatting[] getFormats() {
-        List<Formatting> formattingArr = Lists.newArrayList();
+        List<Formatting> formattingArr = new ArrayList<>();
         for (char c : formatCode.toCharArray()) {
             Formatting formatting = Formatting.byCode(c);
             if (formatting != null) {
