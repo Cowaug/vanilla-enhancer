@@ -4,10 +4,9 @@ import com.cowaug.vanilla.enhancer.utils.Log;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 
 import static com.cowaug.vanilla.enhancer.Main.serverPath;
@@ -46,6 +45,22 @@ public class ConfigIo {
             return loadedData;
         } catch (FileNotFoundException e) {
             Log.LogInfo(configFilename + " not found");
+        }
+        return null;
+    }
+
+    public static <K, V> Map<K, V> LoadConfigFromUrl(String url) {
+        InputStream inputStream;
+        try {
+            inputStream = new URL(url).openStream();
+            Yaml yaml = new Yaml();
+            Map<K, V> loadedData = yaml.load(inputStream);
+            Log.LogDebug(loadedData.toString());
+            return loadedData;
+        } catch (MalformedURLException e) {
+            Log.LogWarn(url + " not found");
+        } catch (IOException e) {
+            Log.LogWarn("IO error when loading config from " + url);
         }
         return null;
     }

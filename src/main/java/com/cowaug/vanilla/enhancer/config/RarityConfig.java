@@ -19,13 +19,21 @@ public class RarityConfig {
     private static final List<String> itemRarityMapNetworkSync = new ArrayList<>();
     private static Map<String, List<String>> rarityYamlMap; // rarity tier, item identifier
 
-    public static void LoadConfig() {
+    public static void LoadConfig(String externalUrl) {
         resetAll();
 
-        rarityYamlMap = ConfigIo.LoadConfig(CONFIG_FILE);
+        if (externalUrl != null) {
+            rarityYamlMap = ConfigIo.LoadConfigFromUrl(externalUrl);
+        }
+
+        if (rarityYamlMap == null) {
+            rarityYamlMap = ConfigIo.LoadConfig(CONFIG_FILE);
+        }
+
         if (rarityYamlMap == null) {
             CreateDefaultConfig();
         }
+
         for (Identifier id : Registries.ITEM.getIds().stream().sorted().toList()) {
             AddRemainsItemToConfig(id.getPath());
         }
@@ -212,6 +220,3 @@ public class RarityConfig {
         itemRarityMapNetworkSync.clear();
     }
 }
-
-
-

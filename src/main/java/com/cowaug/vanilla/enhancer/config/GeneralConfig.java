@@ -9,8 +9,17 @@ public class GeneralConfig {
     private static final String CONFIG_FILE = "/general.yaml";
     private static Map<String, String> generalConfigYamlMap; // key, value
 
-    public static void LoadConfig() {
-        generalConfigYamlMap = ConfigIo.LoadConfig(CONFIG_FILE);
+    public static void LoadConfig(String externalUrl) {
+        generalConfigYamlMap.clear();
+
+        if (externalUrl != null) {
+            generalConfigYamlMap = ConfigIo.LoadConfigFromUrl(externalUrl);
+        }
+
+        if (generalConfigYamlMap == null) {
+            generalConfigYamlMap = ConfigIo.LoadConfig(CONFIG_FILE);
+        }
+
         if (generalConfigYamlMap == null) {
             CreateDefaultConfig();
         }
