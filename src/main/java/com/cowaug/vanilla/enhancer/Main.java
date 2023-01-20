@@ -3,6 +3,7 @@ package com.cowaug.vanilla.enhancer;
 import com.cowaug.vanilla.enhancer.command.CustomCommand;
 import com.cowaug.vanilla.enhancer.config.GeneralConfig;
 import com.cowaug.vanilla.enhancer.config.RarityConfig;
+import com.cowaug.vanilla.enhancer.mod.effect.CustomStatusEffects;
 import com.cowaug.vanilla.enhancer.mod.particle.CustomColorParticles;
 import com.cowaug.vanilla.enhancer.network.CustomNetwork;
 import com.cowaug.vanilla.enhancer.utils.Log;
@@ -20,6 +21,9 @@ public class Main implements ModInitializer {
     public void onInitialize() {
         Main.serverPath = FabricLoader.getInstance().getGameDir().toString();
         Log.LogInfo("Vanilla Enhancer by Cowaug");
+
+        CustomStatusEffects.init();
+
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             CustomColorParticles.init();
         }

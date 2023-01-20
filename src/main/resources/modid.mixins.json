@@ -9,7 +9,9 @@
     "ItemStackTooltipMixin",
     "EntityColorMixin",
     "EnchantmentLevelMixin",
-    "PlayerManagerMixin"
+    "PlayerManagerMixin",
+    "ServerPlayerEntityMixin",
+    "PlayerEntityAccessorMixin"
   ],
   "client": [
   ],
