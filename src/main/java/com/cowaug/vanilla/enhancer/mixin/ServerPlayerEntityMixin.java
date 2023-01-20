@@ -28,7 +28,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Inject(method = "tick", at = @At("HEAD"))
     public void onTick(CallbackInfo ci) {
         if (hasKeepInventoryEffect) {
-            this.addStatusEffect(new StatusEffectInstance(CustomStatusEffects.KEEP_INVENTORY, 10, 5, true, true, true));
+            this.addStatusEffect(new StatusEffectInstance(CustomStatusEffects.KEEP_INVENTORY, 10, 0, true, true, true));
             return;
         }
 
