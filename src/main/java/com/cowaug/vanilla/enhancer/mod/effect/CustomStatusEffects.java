@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier;
 public class CustomStatusEffects {
     public static final StatusEffect KEEP_INVENTORY = new KeepInventoryStatusEffect();
 
-    public static void init() {
+    public static void Init() {
         Registry.register(Registries.STATUS_EFFECT, new Identifier("modid", "keep_inventory"), KEEP_INVENTORY);
     }
 }

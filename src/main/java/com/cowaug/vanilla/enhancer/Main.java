@@ -19,25 +19,30 @@ public class Main implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Main.serverPath = FabricLoader.getInstance().getGameDir().toString();
         Log.LogInfo("Vanilla Enhancer by Cowaug");
+        PrepareModConfigLocation();
 
-        CustomStatusEffects.init();
-
+        // init server/client
+        ServerTickEvents.END_SERVER_TICK.register(server -> CustomNetwork.minecraftServer = server);
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            CustomColorParticles.init();
+            CustomColorParticles.Init();
         }
 
-        // Creating data directory (database and config files are stored there)
-        File file = new File(serverPath = serverPath + "/mods/VanillaEnhancer");
-        if (!file.exists() && !file.mkdirs())
-            throw new RuntimeException("Error creating config directory!");
-
+        // load config
         RarityConfig.LoadConfig(null);
         GeneralConfig.LoadConfig(null);
 
-        ServerTickEvents.END_SERVER_TICK.register(server -> CustomNetwork.minecraftServer = server);
+        // mod init
+        CustomStatusEffects.Init();
         CustomCommand.Init();
-        CustomNetwork.RegisterClientHandleRarityInfo();
+        CustomNetwork.Init();
+    }
+
+    private void PrepareModConfigLocation(){
+        // Creating data directory (database and config files are stored there)
+        Main.serverPath = FabricLoader.getInstance().getGameDir().toString();
+        File file = new File(serverPath = serverPath + "/mods/VanillaEnhancer");
+        if (!file.exists() && !file.mkdirs())
+            throw new RuntimeException("Error creating config directory!");
     }
 }

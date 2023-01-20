@@ -4,14 +4,9 @@ import com.cowaug.vanilla.enhancer.config.Helper;
 import com.cowaug.vanilla.enhancer.mod.effect.CustomStatusEffects;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.TagKey;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -31,10 +26,20 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void onTick(CallbackInfo ci) {
-        hasKeepInventoryEffect = this.getStatusEffect(CustomStatusEffects.KEEP_INVENTORY) != null;
         if (hasKeepInventoryEffect) {
-            this.addStatusEffect(new StatusEffectInstance(CustomStatusEffects.KEEP_INVENTORY, 10, 5, false, false, true));
+            this.addStatusEffect(new StatusEffectInstance(CustomStatusEffects.KEEP_INVENTORY, 10, 5, true, true, true));
+            return;
         }
+
+        int specialItemCount = this.getInventory().remove(is -> {
+            boolean isKnowledgeBook = Registries.ITEM.getId(is.getItem()).getPath().equals("knowledge_book");
+            if (isKnowledgeBook) {
+                return is.hasCustomName() && is.getName().getString().equals("Keep Inventory");
+            }
+            return false;
+        }, 999, this.getInventory());
+
+        hasKeepInventoryEffect = specialItemCount > 0 || this.getStatusEffect(CustomStatusEffects.KEEP_INVENTORY) != null;
     }
 
     @Redirect(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;drop(Lnet/minecraft/entity/damage/DamageSource;)V"))

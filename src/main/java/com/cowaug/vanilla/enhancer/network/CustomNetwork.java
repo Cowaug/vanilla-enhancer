@@ -20,6 +20,10 @@ public class CustomNetwork {
     public static Identifier CUSTOM_RARITY_SYNC = new Identifier("custom_rarity_sync");
     public static MinecraftServer minecraftServer;
 
+    public static void Init(){
+        RegisterClientHandleRarityInfo();
+    }
+
     public static void SendNewRarityToAllPlayer() {
         SendRarityInfoToPlayers(PlayerLookup.all(minecraftServer).stream().toList());
     }

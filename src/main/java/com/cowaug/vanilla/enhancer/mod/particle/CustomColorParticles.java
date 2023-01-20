@@ -32,7 +32,7 @@ public class CustomColorParticles {
         particleHashMap.put(colorName, newParticle);
     }
 
-    public static void init() {
+    public static void Init() {
         for (Formatting format : Formatting.values()) {
             AddParticle(format.getName(), format.getColorValue());
         }
