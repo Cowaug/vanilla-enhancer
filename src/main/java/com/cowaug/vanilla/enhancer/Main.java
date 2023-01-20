@@ -1,8 +1,8 @@
 package com.cowaug.vanilla.enhancer;
 
-import com.cowaug.vanilla.enhancer.command.CustomCommand;
 import com.cowaug.vanilla.enhancer.config.GeneralConfig;
 import com.cowaug.vanilla.enhancer.config.RarityConfig;
+import com.cowaug.vanilla.enhancer.mod.command.CustomCommand;
 import com.cowaug.vanilla.enhancer.mod.effect.CustomStatusEffects;
 import com.cowaug.vanilla.enhancer.mod.particle.CustomColorParticles;
 import com.cowaug.vanilla.enhancer.network.CustomNetwork;
@@ -38,7 +38,7 @@ public class Main implements ModInitializer {
         CustomNetwork.Init();
     }
 
-    private void PrepareModConfigLocation(){
+    private void PrepareModConfigLocation() {
         // Creating data directory (database and config files are stored there)
         Main.serverPath = FabricLoader.getInstance().getGameDir().toString();
         File file = new File(serverPath = serverPath + "/mods/VanillaEnhancer");

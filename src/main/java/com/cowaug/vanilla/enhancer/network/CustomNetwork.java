@@ -20,7 +20,7 @@ public class CustomNetwork {
     public static Identifier CUSTOM_RARITY_SYNC = new Identifier("custom_rarity_sync");
     public static MinecraftServer minecraftServer;
 
-    public static void Init(){
+    public static void Init() {
         RegisterClientHandleRarityInfo();
     }
 

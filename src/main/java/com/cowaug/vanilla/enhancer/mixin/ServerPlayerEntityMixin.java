@@ -1,5 +1,6 @@
 package com.cowaug.vanilla.enhancer.mixin;
 
+import com.cowaug.vanilla.enhancer.config.GeneralConfig;
 import com.cowaug.vanilla.enhancer.config.Helper;
 import com.cowaug.vanilla.enhancer.mod.effect.CustomStatusEffects;
 import com.mojang.authlib.GameProfile;
@@ -34,7 +35,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         int specialItemCount = this.getInventory().remove(is -> {
             boolean isKnowledgeBook = Registries.ITEM.getId(is.getItem()).getPath().equals("knowledge_book");
             if (isKnowledgeBook) {
-                return is.hasCustomName() && is.getName().getString().equals("Keep Inventory");
+                return is.hasCustomName() && is.getName().getString().equals(GeneralConfig.getKeepInventoryTraderBookName());
             }
             return false;
         }, 999, this.getInventory());

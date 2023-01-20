@@ -26,7 +26,7 @@ public class RarityConfig {
             rarityYamlMap = ConfigIo.LoadConfigFromUrl(externalUrl);
         }
 
-        if (rarityYamlMap == null) {
+        if (externalUrl == null || rarityYamlMap == null) {
             rarityYamlMap = ConfigIo.LoadConfig(CONFIG_FILE);
         }
 

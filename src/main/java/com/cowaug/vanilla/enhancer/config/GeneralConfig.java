@@ -14,7 +14,7 @@ public class GeneralConfig {
             generalConfigYamlMap = ConfigIo.LoadConfigFromUrl(externalUrl);
         }
 
-        if (generalConfigYamlMap == null) {
+        if (externalUrl == null || generalConfigYamlMap == null) {
             generalConfigYamlMap = ConfigIo.LoadConfig(CONFIG_FILE);
         }
 
@@ -28,33 +28,72 @@ public class GeneralConfig {
         generalConfigYamlMap = new LinkedHashMap<>();
     }
 
+    // misc
     public static int getAgeIncreasePerTick() {
-        return getConfig(ConfigName.agingPerTick, 1);
+        return getConfig(ConfigName.AGING_PER_TICK, 1);
     }
 
     public static boolean isAllowServerOverride() {
-        return getConfig(ConfigName.allowServerOverride, true);
+        return getConfig(ConfigName.ALLOW_SERVER_OVERRIDE, true);
     }
 
     public static boolean isObfuscateServer() {
-        return getConfig(ConfigName.obfuscateServer, true);
+        return getConfig(ConfigName.OBFUSCATE_SERVER, true);
     }
 
     public static float getMinEntityRotateSpeed() {
-        return getConfig(ConfigName.minEntityRotate, 0.8f);
+        return getConfig(ConfigName.MIN_ENTITY_ROTATE, 0.8f);
     }
 
     public static float getMaxEntityRotateSpeed() {
-        return getConfig(ConfigName.maxEntityRotate, 1.5f);
+        return getConfig(ConfigName.MAX_ENTITY_ROTATE, 1.5f);
     }
 
     public static boolean isSpawnParticleOnItem() {
-        return getConfig(ConfigName.spawnParticleOnItem, true);
+        return getConfig(ConfigName.SPAWN_PARTICLE_ON_ITEM, true);
     }
 
     public static boolean isGlowBorderOnItem() {
-        return getConfig(ConfigName.glowBorderOnItem, false);
+        return getConfig(ConfigName.GLOW_BORDER_ON_ITEM, false);
     }
+
+    // keep inventory trader
+    public static String getKeepInventoryTraderName() {
+        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_NAME, "Keep Inventory Trader");
+    }
+
+    public static String getKeepInventoryTraderTag() {
+        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_TAG, "keep_inventory_trader");
+    }
+
+    public static String getKeepInventoryTraderBuyItem1Key() {
+        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_BUY_ITEM_1_KEY, "dirt");
+    }
+
+    public static int getKeepInventoryTraderBuyItem1Count() {
+        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_BUY_ITEM_1_COUNT, 64);
+    }
+
+    public static String getKeepInventoryTraderBuyItem2Key() {
+        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_BUY_ITEM_2_KEY, "diamond_block");
+    }
+
+    public static int getKeepInventoryTraderBuyItem2Count() {
+        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_BUY_ITEM_2_COUNT, 3);
+    }
+
+    public static String getKeepInventoryTraderBookName() {
+        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_BOOK_NAME, "Keep Inventory Book");
+    }
+
+    public static String getKeepInventoryTraderDefaultSpawnLocation() {
+        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_DEFAULT_SPAWN_LOC, "0 150 0");
+    }
+
+    public static void setKeepInventoryTraderDefaultSpawnLocation(String posString) {
+        saveConfig(ConfigName.KEEP_INVENTORY_TRADER_DEFAULT_SPAWN_LOC, posString);
+    }
+
 
     @SuppressWarnings("unchecked")
     private static <T> T getConfig(ConfigName configName, T defaultValue) {
@@ -81,22 +120,35 @@ public class GeneralConfig {
             }
         } catch (Exception e) {
             Log.LogWarn("Invalid config found for '" + configName + "'. Setting value to '" + defaultValue + "'");
-            generalConfigYamlMap.put(configName.name(), defaultValue + "");
-            ConfigIo.WriteConfig(CONFIG_FILE, generalConfigYamlMap);
+            saveConfig(configName, defaultValue);
             return defaultValue;
         }
 
         return defaultValue;
     }
 
+    private static <T> void saveConfig(ConfigName configName, T newValue) {
+        generalConfigYamlMap.put(configName.name(), newValue + "");
+        ConfigIo.WriteConfig(CONFIG_FILE, generalConfigYamlMap);
+    }
+
     public enum ConfigName {
-        agingPerTick,
-        allowServerOverride,
-        obfuscateServer,
-        minEntityRotate,
-        maxEntityRotate,
-        spawnParticleOnItem,
-        glowBorderOnItem
+        AGING_PER_TICK,
+        ALLOW_SERVER_OVERRIDE,
+        OBFUSCATE_SERVER,
+        MIN_ENTITY_ROTATE,
+        MAX_ENTITY_ROTATE,
+        SPAWN_PARTICLE_ON_ITEM,
+        GLOW_BORDER_ON_ITEM,
+
+        KEEP_INVENTORY_TRADER_NAME,
+        KEEP_INVENTORY_TRADER_TAG,
+        KEEP_INVENTORY_TRADER_BUY_ITEM_1_KEY,
+        KEEP_INVENTORY_TRADER_BUY_ITEM_1_COUNT,
+        KEEP_INVENTORY_TRADER_BUY_ITEM_2_KEY,
+        KEEP_INVENTORY_TRADER_BUY_ITEM_2_COUNT,
+        KEEP_INVENTORY_TRADER_BOOK_NAME,
+        KEEP_INVENTORY_TRADER_DEFAULT_SPAWN_LOC,
     }
 }
 
