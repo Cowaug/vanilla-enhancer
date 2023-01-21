@@ -33,7 +33,7 @@ public abstract class ItemStackTooltipMixin implements FabricItemStack {
 
     @Inject(method = "getTooltip", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
     public void getTooltip(@Nullable PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> ci, List<Text> texts) {
-        ItemStack thisItemStack = Helper.CastTo(ItemStack.class, this);
+        ItemStack thisItemStack = Helper.CastFrom(this);
 
         Text itemName = texts.get(0).copy().formatted(RarityConfig.getRarity(Registries.ITEM.getId(thisItemStack.getItem()).getPath()).getFormats());
         texts.remove(0);
@@ -55,7 +55,7 @@ public abstract class ItemStackTooltipMixin implements FabricItemStack {
 
     @Inject(method = "getName()Lnet/minecraft/text/Text;", at = @At("RETURN"), cancellable = true)
     private void getName(CallbackInfoReturnable<MutableText> cir) {
-        ItemStack thisItemStack = Helper.CastTo(ItemStack.class, this);
+        ItemStack thisItemStack = Helper.CastFrom(this);
         if (!cir.isCancelled())
             cir.setReturnValue(cir.getReturnValue().formatted(RarityConfig.getRarity(Registries.ITEM.getId(thisItemStack.getItem()).getPath()).getFormats()));
     }

@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("unused")
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     public boolean hasKeepInventoryEffect;
@@ -53,7 +54,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "copyFrom", at = @At("RETURN"))
     public void copyFromWithInvKeep(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo ci) {
-        ServerPlayerEntityMixin oldPlayerEntity = Helper.CastTo(ServerPlayerEntityMixin.class, oldPlayer);
+        ServerPlayerEntityMixin oldPlayerEntity = Helper.CastFrom(oldPlayer);
         boolean hasKeepInventoryEffect = oldPlayerEntity.hasKeepInventoryEffect;
 
         if (!alive && hasKeepInventoryEffect) {

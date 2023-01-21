@@ -29,7 +29,7 @@ public abstract class EntityColorMixin {
     public void injectChangeColorValue(CallbackInfoReturnable<Integer> cir) {
         if (this.getScoreboardTeam() == null) {
             if (type == EntityType.ITEM) {
-                ItemEntity itemEntity = Helper.CastTo(ItemEntity.class, this);
+                ItemEntity itemEntity = Helper.CastFrom(this);
                 CustomRarity rarity = RarityConfig.getRarity(Registries.ITEM.getId(itemEntity.getStack().getItem()).getPath());
                 Integer colorCode = rarity.getColor();
                 if (rarity.isDefault()) {
