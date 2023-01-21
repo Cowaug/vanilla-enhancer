@@ -25,6 +25,9 @@ public class KeepInventoryTrader {
     private static VillagerEntity villagerEntity = null;
 
     public static void Init() {
+        if(villagerEntity != null){
+            return;
+        }
         ExecuteSummonKeepInventoryTrader(null);
     }
 
@@ -32,7 +35,7 @@ public class KeepInventoryTrader {
         ServerWorld world = CustomNetwork.minecraftServer.getOverworld();
 
         if (villagerEntity != null) {
-            villagerEntity.kill();
+            villagerEntity.discard();
         }
 
         int x, y, z;

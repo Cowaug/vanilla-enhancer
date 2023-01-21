@@ -27,11 +27,11 @@ public class Main implements ModInitializer {
         PrepareModConfigLocation();
 
         // init server/client
-        ServerWorldEvents.LOAD.register((server, world) -> {
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
             CustomNetwork.minecraftServer = server;
             KeepInventoryTrader.Init();
+            KeepInventoryTrader.KillAllTrader();
         });
-        ServerTickEvents.END_SERVER_TICK.register(server -> KeepInventoryTrader.KillAllTrader());
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             CustomColorParticles.Init();
         }
