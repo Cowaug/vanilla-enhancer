@@ -1,5 +1,6 @@
 package com.cowaug.vanilla.enhancer.config;
 
+import com.cowaug.vanilla.enhancer.network.CustomNetwork;
 import com.cowaug.vanilla.enhancer.utils.Log;
 
 import java.util.LinkedHashMap;
@@ -59,11 +60,7 @@ public class GeneralConfig {
 
     // keep inventory trader
     public static String getKeepInventoryTraderName() {
-        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_NAME, "Keep Inventory Trader");
-    }
-
-    public static String getKeepInventoryTraderTag() {
-        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_TAG, "keep_inventory_trader");
+        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_NAME, "Keep Inv");
     }
 
     public static String getKeepInventoryTraderBuyItem1Key() {
@@ -87,11 +84,31 @@ public class GeneralConfig {
     }
 
     public static String getKeepInventoryTraderDefaultSpawnLocation() {
-        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_DEFAULT_SPAWN_LOC, "0 150 0");
+        String defaultValue = "0 150 0";
+        if (CustomNetwork.minecraftServer != null) {
+            int x = CustomNetwork.minecraftServer.getOverworld().getSpawnPos().getX() + 1;
+            int y = CustomNetwork.minecraftServer.getOverworld().getSpawnPos().getY() + 1;
+            int z = CustomNetwork.minecraftServer.getOverworld().getSpawnPos().getZ() + 1;
+            defaultValue = x + " " + y + " " + z;
+        }
+
+        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_DEFAULT_SPAWN_LOC, defaultValue);
     }
 
     public static void setKeepInventoryTraderDefaultSpawnLocation(String posString) {
         saveConfig(ConfigName.KEEP_INVENTORY_TRADER_DEFAULT_SPAWN_LOC, posString);
+    }
+
+    public static long getKeepInventoryTraderRestockInterval(){
+        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_RESTOCK_TICKS, 24000L);
+    }
+
+    public static int getKeepInventoryTraderItemIncreaseRate(){
+        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_ITEM_INCREASE, 1);
+    }
+
+    public static int getKeepInventoryTraderTradePerRestock(){
+        return getConfig(ConfigName.KEEP_INVENTORY_TRADER_TRADE_PER_RESTOCK, 8);
     }
 
 
@@ -105,6 +122,9 @@ public class GeneralConfig {
 
             if (defaultValue instanceof Integer) {
                 return (T) Integer.valueOf(result);
+            }
+            if (defaultValue instanceof Long) {
+                return (T) Long.valueOf(result);
             }
             if (defaultValue instanceof Double) {
                 return (T) Double.valueOf(result);
@@ -142,13 +162,15 @@ public class GeneralConfig {
         GLOW_BORDER_ON_ITEM,
 
         KEEP_INVENTORY_TRADER_NAME,
-        KEEP_INVENTORY_TRADER_TAG,
         KEEP_INVENTORY_TRADER_BUY_ITEM_1_KEY,
         KEEP_INVENTORY_TRADER_BUY_ITEM_1_COUNT,
         KEEP_INVENTORY_TRADER_BUY_ITEM_2_KEY,
         KEEP_INVENTORY_TRADER_BUY_ITEM_2_COUNT,
         KEEP_INVENTORY_TRADER_BOOK_NAME,
         KEEP_INVENTORY_TRADER_DEFAULT_SPAWN_LOC,
+        KEEP_INVENTORY_TRADER_RESTOCK_TICKS,
+        KEEP_INVENTORY_TRADER_ITEM_INCREASE,
+        KEEP_INVENTORY_TRADER_TRADE_PER_RESTOCK,
     }
 }
 

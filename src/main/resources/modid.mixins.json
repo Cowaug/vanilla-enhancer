@@ -10,7 +10,8 @@
     "EntityColorMixin",
     "EnchantmentLevelMixin",
     "PlayerManagerMixin",
-    "ServerPlayerEntityMixin"
+    "ServerPlayerEntityMixin",
+    "ServerWorldAccessorMixin"
   ],
   "client": [
   ],

@@ -9,6 +9,8 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,11 +30,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void onTick(CallbackInfo ci) {
-        if (hasKeepInventoryEffect) {
-            this.addStatusEffect(new StatusEffectInstance(CustomStatusEffects.KEEP_INVENTORY, 10, 0, true, true, true));
-            return;
-        }
-
         int specialItemCount = this.getInventory().remove(is -> {
             boolean isKnowledgeBook = Registries.ITEM.getId(is.getItem()).getPath().equals("knowledge_book");
             if (isKnowledgeBook) {
@@ -41,7 +38,18 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             return false;
         }, 999, this.getInventory());
 
+        if (hasKeepInventoryEffect) {
+            this.addStatusEffect(new StatusEffectInstance(CustomStatusEffects.KEEP_INVENTORY, 10, 0, true, true, true));
+            if(specialItemCount > 0){
+                this.sendMessage(Text.literal("One-time Keep Inventory Reactivated!").formatted(Formatting.DARK_RED));
+            }
+            return;
+        }
+
         hasKeepInventoryEffect = specialItemCount > 0 || this.getStatusEffect(CustomStatusEffects.KEEP_INVENTORY) != null;
+        if(hasKeepInventoryEffect){
+            this.sendMessage(Text.literal("One-time Keep Inventory Activated!").formatted(Formatting.DARK_RED));
+        }
     }
 
     @Redirect(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;drop(Lnet/minecraft/entity/damage/DamageSource;)V"))

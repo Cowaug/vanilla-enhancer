@@ -5,14 +5,18 @@ import com.cowaug.vanilla.enhancer.config.RarityConfig;
 import com.cowaug.vanilla.enhancer.mod.command.CustomCommand;
 import com.cowaug.vanilla.enhancer.mod.effect.CustomStatusEffects;
 import com.cowaug.vanilla.enhancer.mod.particle.CustomColorParticles;
+import com.cowaug.vanilla.enhancer.mod.trader.KeepInventoryTrader;
 import com.cowaug.vanilla.enhancer.network.CustomNetwork;
 import com.cowaug.vanilla.enhancer.utils.Log;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
+
+import static com.cowaug.vanilla.enhancer.mod.trader.KeepInventoryTrader.ExecuteSummonKeepInventoryTrader;
 
 public class Main implements ModInitializer {
     public static String serverPath;
@@ -23,7 +27,11 @@ public class Main implements ModInitializer {
         PrepareModConfigLocation();
 
         // init server/client
-        ServerTickEvents.END_SERVER_TICK.register(server -> CustomNetwork.minecraftServer = server);
+        ServerWorldEvents.LOAD.register((server, world) -> {
+            CustomNetwork.minecraftServer = server;
+            KeepInventoryTrader.Init();
+        });
+        ServerTickEvents.END_SERVER_TICK.register(server -> KeepInventoryTrader.KillAllTrader());
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             CustomColorParticles.Init();
         }

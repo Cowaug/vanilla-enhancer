@@ -29,7 +29,7 @@ public class ConfigIo {
 
             Yaml yaml = new Yaml(dumperOptions);
             yaml.dump(objectMap, writer);
-            Log.LogInfo("Saved " + configFilename);
+            Log.LogDebug("Saved " + configFilename);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -41,7 +41,7 @@ public class ConfigIo {
             inputStream = new FileInputStream(serverPath + configFilename);
             Yaml yaml = new Yaml();
             Map<K, V> loadedData = yaml.load(inputStream);
-            Log.LogDebug(loadedData.toString());
+            Log.LogDebug(loadedData != null ? loadedData.toString() : null);
             return loadedData;
         } catch (FileNotFoundException e) {
             Log.LogInfo(configFilename + " not found");
@@ -55,7 +55,7 @@ public class ConfigIo {
             inputStream = new URL(url).openStream();
             Yaml yaml = new Yaml();
             Map<K, V> loadedData = yaml.load(inputStream);
-            Log.LogDebug(loadedData.toString());
+            Log.LogDebug(loadedData != null ? loadedData.toString() : null);
             return loadedData;
         } catch (MalformedURLException e) {
             Log.LogWarn(url + " not found");
