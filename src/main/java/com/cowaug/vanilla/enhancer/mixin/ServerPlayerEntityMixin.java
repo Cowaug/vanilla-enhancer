@@ -39,15 +39,18 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         }, 999, this.getInventory());
 
         if (hasKeepInventoryEffect) {
-            this.addStatusEffect(new StatusEffectInstance(CustomStatusEffects.KEEP_INVENTORY, 10, 0, true, true, true));
-            if(specialItemCount > 0){
+            StatusEffectInstance currentInstance = this.getStatusEffect(CustomStatusEffects.KEEP_INVENTORY);
+            if (currentInstance == null || currentInstance.getDuration() <= 1210) {
+                this.addStatusEffect(new StatusEffectInstance(CustomStatusEffects.KEEP_INVENTORY, 1230, 0, false, true, true));
+            }
+            if (specialItemCount > 0) {
                 this.sendMessage(Text.literal("One-time Keep Inventory Reactivated!").formatted(Formatting.DARK_RED));
             }
             return;
         }
 
         hasKeepInventoryEffect = specialItemCount > 0 || this.getStatusEffect(CustomStatusEffects.KEEP_INVENTORY) != null;
-        if(hasKeepInventoryEffect){
+        if (hasKeepInventoryEffect) {
             this.sendMessage(Text.literal("One-time Keep Inventory Activated!").formatted(Formatting.DARK_RED));
         }
     }
@@ -63,7 +66,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Inject(method = "copyFrom", at = @At("RETURN"))
     public void copyFromWithInvKeep(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo ci) {
         ServerPlayerEntityMixin oldPlayerEntity = Helper.CastFrom(oldPlayer);
-        boolean hasKeepInventoryEffect = oldPlayerEntity.hasKeepInventoryEffect;
+        hasKeepInventoryEffect = oldPlayerEntity.hasKeepInventoryEffect;
 
         if (!alive && hasKeepInventoryEffect) {
             this.getInventory().clone(oldPlayer.getInventory());
@@ -71,6 +74,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             this.totalExperience = oldPlayer.totalExperience;
             this.experienceProgress = oldPlayer.experienceProgress;
             this.setScore(oldPlayer.getScore());
+            hasKeepInventoryEffect = false;
         }
     }
 }
