@@ -4,6 +4,7 @@ import com.cowaug.vanilla.enhancer.config.GeneralConfig;
 import com.cowaug.vanilla.enhancer.config.RarityConfig;
 import com.cowaug.vanilla.enhancer.mod.trader.KeepInventoryTrader;
 import com.cowaug.vanilla.enhancer.network.CustomNetwork;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.BlockPosArgumentType;
@@ -19,6 +20,7 @@ public class CustomCommand {
     public static void Init() {
         AddRarityReloadCommand();
         AddSpawnKeepInventoryTrader();
+        AddHideArmorCommand();
     }
 
     private static void AddRarityReloadCommand() {
@@ -63,13 +65,13 @@ public class CustomCommand {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("spawn-keep-inventory-trader")
                 .requires(source -> source.hasPermissionLevel(4))
                 .then(argument("pos", BlockPosArgumentType.blockPos()).executes(context -> {
-                            if (CustomNetwork.minecraftServer == null) {
-                                return 1;
-                            }
-                            BlockPos pos = BlockPosArgumentType.getBlockPos(context, "pos");
-                            ExecuteSummonKeepInventoryTrader(pos);
-                            return 1;
-                        }))));
+                    if (CustomNetwork.minecraftServer == null) {
+                        return 1;
+                    }
+                    BlockPos pos = BlockPosArgumentType.getBlockPos(context, "pos");
+                    ExecuteSummonKeepInventoryTrader(pos);
+                    return 1;
+                }))));
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("spawn-keep-inventory-trader")
                 .requires(source -> source.hasPermissionLevel(4))
                 .executes(context -> {
@@ -88,5 +90,16 @@ public class CustomCommand {
                     KeepInventoryTrader.KillAllTrader();
                     return 1;
                 })));
+    }
+
+    private static void AddHideArmorCommand() {
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(literal("hide-armor")
+                .then(argument("hide", BoolArgumentType.bool()).executes(context -> {
+                    boolean hide = BoolArgumentType.getBool(context, "hide");
+                    GeneralConfig.setHideChest(hide);
+                    GeneralConfig.setHideArmor(hide);
+                    GeneralConfig.setHideHead(hide);
+                    return 1;
+                }))));
     }
 }

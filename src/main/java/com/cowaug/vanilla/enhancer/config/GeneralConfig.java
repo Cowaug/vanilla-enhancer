@@ -99,18 +99,41 @@ public class GeneralConfig {
         saveConfig(ConfigName.KEEP_INVENTORY_TRADER_DEFAULT_SPAWN_LOC, posString);
     }
 
-    public static long getKeepInventoryTraderRestockInterval(){
+    public static long getKeepInventoryTraderRestockInterval() {
         return getConfig(ConfigName.KEEP_INVENTORY_TRADER_RESTOCK_TICKS, 24000L);
     }
 
-    public static int getKeepInventoryTraderItemIncreaseRate(){
+    public static int getKeepInventoryTraderItemIncreaseRate() {
         return getConfig(ConfigName.KEEP_INVENTORY_TRADER_ITEM_INCREASE, 1);
     }
 
-    public static int getKeepInventoryTraderTradePerRestock(){
+    public static int getKeepInventoryTraderTradePerRestock() {
         return getConfig(ConfigName.KEEP_INVENTORY_TRADER_TRADE_PER_RESTOCK, 8);
     }
 
+    public static boolean isHideHead() {
+        return getConfig(ConfigName.HIDE_HELMET, false);
+    }
+
+    public static boolean isHideChest() {
+        return getConfig(ConfigName.HIDE_CHEST, false);
+    }
+
+    public static boolean isHideArmor() {
+        return getConfig(ConfigName.HIDE_ARMOUR, false);
+    }
+
+    public static void setHideHead(boolean value) {
+        saveConfig(ConfigName.HIDE_HELMET, value);
+    }
+
+    public static void setHideChest(boolean value) {
+        saveConfig(ConfigName.HIDE_CHEST, value);
+    }
+
+    public static void setHideArmor(boolean value) {
+        saveConfig(ConfigName.HIDE_ARMOUR, value);
+    }
 
     @SuppressWarnings("unchecked")
     private static <T> T getConfig(ConfigName configName, T defaultValue) {
@@ -171,6 +194,10 @@ public class GeneralConfig {
         KEEP_INVENTORY_TRADER_RESTOCK_TICKS,
         KEEP_INVENTORY_TRADER_ITEM_INCREASE,
         KEEP_INVENTORY_TRADER_TRADE_PER_RESTOCK,
+
+        HIDE_ARMOUR,
+        HIDE_HELMET,
+        HIDE_CHEST
     }
 }
 
